@@ -1,0 +1,60 @@
+# Node modules (indispensable à ignorer)
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Environnements
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Cache de build
+dist/
+build/
+.cache/
+.next/
+
+# Dossiers temporaires
+tmp/
+temp/
+
+# Systèmes d’exploitation
+.DS_Store
+Thumbs.db
+
+# IDEs / éditeurs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Tests
+coverage/
+.nyc_output/
+
+# TypeScript
+*.tsbuildinfo
+
+# PM2 (si tu utilises PM2 pour le déploiement)
+.pids
+*.log
+
+# Swagger ou autres fichiers auto-générés
+swagger.json
+swagger.yaml
