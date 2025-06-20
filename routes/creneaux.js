@@ -16,7 +16,7 @@ function isValidTime(timeString) {
 // GET : Liste de tous les créneaux
 router.get('/creneaux', async (req, res) => {
   const {activite}=req.query
-  console.log(activite )
+  console.log(activite)
   // if (!activite || !date) {
   //   return res.status(400).json({ error: 'Paramètres "activite" et "date" requis' });
   // }
