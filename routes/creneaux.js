@@ -12,9 +12,30 @@ function isValidDate(dateString) {
 function isValidTime(timeString) {
   return /^([01]\d|2[0-3]):([0-5]\d)$/.test(timeString);
 }
-
 // GET : Liste de tous les créneaux
-router.get('/creneaux', async (req, res) => {
+
+router.get('/Allcreneaux', async (req, res) => {
+  const {activite}=req.query
+  console.log(activite)
+  // if (!activite || !date) {
+  //   return res.status(400).json({ error: 'Paramètres "activite" et "date" requis' });
+  // }
+
+  try {
+    const [rows] = await db.execute(`
+         SELECT c.id,c.date,c.heure_debut,c.heure_fin,c.id_installation,c.disponible,i.capacite,i.nbr,i.type
+          FROM creneaux as c, installations as i
+          WHERE c.id_installation=i.id;
+    `
+  );
+    res.json(rows);
+  } catch (error) {
+    console.error("Erreur lors du fetch des créneaux :", error);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+
+});
+router.get('/creneauxDisponibles', async (req, res) => {
   const {activite}=req.query
   console.log(activite)
   // if (!activite || !date) {
@@ -42,32 +63,32 @@ router.get('/creneaux', async (req, res) => {
 
 });
 
-router.get('/api/creneaux-disponibles', (req, res) => {
-  const { activite, date } = req.query;
+// router.get('/api/creneaux-disponibles', (req, res) => {
+//   const { activite, date } = req.query;
 
-  if (!activite || !date) {
-    return res.status(400).json({ error: 'Paramètres "activite" et "date" requis' });
-  }
+//   if (!activite || !date) {
+//     return res.status(400).json({ error: 'Paramètres "activite" et "date" requis' });
+//   }
 
-  const sql = `
-   SELECT c.id,c.date,c.heure_debut,c.heure_fin
-    FROM creneaux as c, installations as i
-    WHERE c.date=?
-    AND c.disponible="oui"
-    AND c.id_installation=i.id
-    AND i.type=?
-    AND i.disponible="oui";
-  `;
+//   const sql = `
+//    SELECT c.id,c.date,c.heure_debut,c.heure_fin
+//     FROM creneaux as c, installations as i
+//     WHERE c.date=?
+//     AND c.disponible="oui"
+//     AND c.id_installation=i.id
+//     AND i.type=?
+//     AND i.disponible="oui";
+//   `;
 
-  connection.query(sql, [date,activite], (err, results) => {
-    if (err) {
-      console.error('Erreur lors de la récupération des créneaux :', err);
-      return res.status(500).json({ error: 'Erreur serveur' });
-    }
+//   connection.query(sql, [date,activite], (err, results) => {
+//     if (err) {
+//       console.error('Erreur lors de la récupération des créneaux :', err);
+//       return res.status(500).json({ error: 'Erreur serveur' });
+//     }
 
-    res.json(results);
-  });
-});
+//     res.json(results);
+//   });
+// });
 
 // GET : Détail d’un créneau
 router.get('/creneaux/:id', async (req, res) => {
@@ -112,7 +133,7 @@ router.get('/creneaux/:id', async (req, res) => {
 // POST : Ajouter un créneau avec validation
 router.post('/creneaux', async (req, res) => {
   const { date, heure_debut, heure_fin, installation_id, disponible } = req.body;
-
+  console.log({ date, heure_debut, heure_fin, installation_id, disponible })
   // Validation des données
   if (!isValidDate(date)) {
     return res.status(400).json({ message: "Date invalide (format attendu: YYYY-MM-DD)" });
@@ -123,9 +144,9 @@ router.post('/creneaux', async (req, res) => {
   if (typeof installation_id !== 'number' || installation_id <= 0) {
     return res.status(400).json({ message: "ID installation invalide" });
   }
-  if (typeof disponible !== 'boolean') {
-    return res.status(400).json({ message: "Disponible doit être un booléen" });
-  }
+  // if (typeof disponible !== 'boolean') {
+  //   return res.status(400).json({ message: "Disponible doit être un booléen" });
+  // }
 
   try {
     const [result] = await db.execute(

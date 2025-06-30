@@ -2,34 +2,41 @@ const express = require('express');
 const router = express.Router();
 const Stripe = require('stripe');
 const stripe = Stripe(process.env.CLE_STRIPE);
-router.post('/payementStrip', async (req, res) => {
-  const {montant,infoReservation} = req.body;
-  // montanant : prix de reservation
-  //inforReservation : reservatin de terrain tennis 
-  console.log(montant,infoReservation)
+
+router.post('/payementStripe', async (req, res) => {
+  const { reservation } = req.body;
+  console.log(reservation)
   try {
+    
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [{
         price_data: {
           currency: 'mad',
-          unit_amount: montant*100,
+          unit_amount: 200 * 100, // récupérable dynamiquement
           product_data: {
-            name: infoReservation,
+            name: reservation.infoReservation || 'Réservation Tennis',
           },
         },
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: `http://localhost:4200/resultPayement?status=success`,
-      cancel_url: `http://localhost:4200/resultPayement?status=cancel`,
+
+      metadata: {
+        reservation: JSON.stringify(reservation)
+      },
+
+     success_url: `http://localhost:4200/resultPayement?status=success&activiter=${reservation.activite}&idRes=${reservation.id}&session_id={CHECKOUT_SESSION_ID}`,
+     cancel_url: `http://localhost:4200/resultPayement?status=cancel&activiter=${reservation.activite}&idRes=${reservation.id}`,
+
     });
 
     res.json({ id: session.id });
+
   } catch (err) {
-    console.error(err);
+    console.error('Erreur lors de la création de session Stripe :', err);
     res.status(500).json({ error: err.message });
   }
 });
 
-module.exports=router
+module.exports = router;
