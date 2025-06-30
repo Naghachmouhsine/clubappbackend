@@ -72,58 +72,80 @@ router.get('/reservations/:id', async (req, res) => {
 
 // POST : Ajouter une réservation
 router.post('/reservations', async (req, res) => {
-  const {id_installation,nbr_installation_reserver,id_utilisateur, id_creneau, statut } = req.body;
-
-  console.log(req.body)
-  // if (!isValidDate(date_reservation)) {
-  //   return res.status(400).json({ message: "Date de réservation invalide (YYYY-MM-DD)" });
-  // }
+   const {
+    id_installation,
+    nbr_installation_reserver,
+    id_utilisateur,
+    id_creneau,
+    nbr_personn,
+    statut,
+    infoReservation
+  } = req.body;
+  // Validation basique
   if (typeof id_utilisateur !== 'number' || id_utilisateur <= 0) {
-    return res.status(400).json({ message: "ID utilisateur invalide" });
+    throw new Error("ID utilisateur invalide");
   }
   if (typeof id_creneau !== 'number' || id_creneau <= 0) {
-    return res.status(400).json({ message: "ID créneau invalide" });
+    throw new Error("ID créneau invalide");
   }
   if (typeof statut !== 'string' || !['confirmée', 'en attente', 'annulée'].includes(statut.toLowerCase())) {
-    return res.status(400).json({ message: "Statut invalide (confirmée, en attente, annulée)" });
+    throw new Error("Statut invalide");
   }
-  const connection = await db.getConnection(); 
-try {
-    await connection.beginTransaction(); //Début transaction
-    console.log("1")
-    //Insertion de la réservation
-    const [insertResult] = await connection.execute(
-      'INSERT INTO reservations (id_utilisateur, id_creneau, date_jour_reservation, statut) VALUES (?, ?, ?, ?)',
-      [id_utilisateur, id_creneau, currentDateTime(), statut]
-    );
-    console.log("2")
 
-    //Modification le statut du créneau réservé
+  const connection = await db.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    // Insertion réservation
+    const [insertResult] = await connection.execute(
+      'INSERT INTO reservations (id_utilisateur, id_creneau, date_jour_reservation, nbr_personn, statut) VALUES (?, ?, NOW(), ?, ?)',
+      [id_utilisateur, id_creneau, nbr_personn, statut]
+    );
+
+    // Maj des créneaux
     await connection.execute(
       'UPDATE `creneaux` SET `disponible`="non" WHERE id=?',
       [id_creneau]
     );
-    console.log("3")
 
-    // modification nombre d'installation
+    // Maj des installations
     await connection.execute(
-      'UPDATE `installations` SET `nbr`=?  WHERE id=?',
-      [nbr_installation_reserver,id_installation]
-    )
-    console.log("4")
+      'UPDATE `installations` SET `nbr`=? WHERE id=?',
+      [nbr_installation_reserver, id_installation]
+    );
 
     await connection.commit();
-    res.status(201).json({ message: 'Réservation confirmée', id: insertResult.insertId });
+
+    if (res) {
+      res.status(201).json({ message: 'Réservation confirmée', id: insertResult.insertId });
+    }
+
+    return insertResult.insertId;
 
   } catch (error) {
-    await connection.rollback(); // Annuler si erreur
-    console.error('Erreur transactionnelle :', error);
-    res.status(500).json({ message: 'Erreur serveur lors de la réservation' });
+    await connection.rollback();
+    throw error;
   } finally {
-    connection.release(); //libérer la connexion
+    connection.release();
   }
 });
+router.put("/updateStatus",async (req,res)=>{
+  const {id,status}=req.body
+  try {
+    const [result] = await db.execute(
+      'UPDATE reservations SET statut = ? WHERE id = ?',
+      [status,id]
+    );
 
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Réservation non trouvée" });
+    }
+    res.json({ message: "Réservation mise à jour avec succès" });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de la réservation :", error);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+})
 // PUT : Modifier une réservation
 router.put('/reservations/:id', async (req, res) => {
   const id = req.params.id;
@@ -172,5 +194,65 @@ router.delete('/reservations/:id', async (req, res) => {
     res.status(500).json({ message: "Erreur serveur" });
   }
 });
+
+async function reserver(reservation, res = null) {
+  const {
+    id_installation,
+    nbr_installation_reserver,
+    id_utilisateur,
+    id_creneau,
+    nbr_personn,
+    statut,
+    infoReservation
+  } = reservation;
+
+  // // Validation basique
+  // if (typeof id_utilisateur !== 'number' || id_utilisateur <= 0) {
+  //   throw new Error("ID utilisateur invalide");
+  // }
+  // if (typeof id_creneau !== 'number' || id_creneau <= 0) {
+  //   throw new Error("ID créneau invalide");
+  // }
+  // if (typeof statut !== 'string' || !['confirmée', 'en attente', 'annulée'].includes(statut.toLowerCase())) {
+  //   throw new Error("Statut invalide");
+  // }
+
+  // const connection = await db.getConnection();
+  // try {
+  //   await connection.beginTransaction();
+
+  //   // Insertion réservation
+  //   const [insertResult] = await connection.execute(
+  //     'INSERT INTO reservations (id_utilisateur, id_creneau, date_jour_reservation, nbr_personn, statut) VALUES (?, ?, NOW(), ?, ?)',
+  //     [id_utilisateur, id_creneau, nbr_personn, statut]
+  //   );
+
+  //   // Maj des créneaux
+  //   await connection.execute(
+  //     'UPDATE `creneaux` SET `disponible`="non" WHERE id=?',
+  //     [id_creneau]
+  //   );
+
+  //   // Maj des installations
+  //   await connection.execute(
+  //     'UPDATE `installations` SET `nbr`=? WHERE id=?',
+  //     [nbr_installation_reserver, id_installation]
+  //   );
+
+  //   await connection.commit();
+
+  //   if (res) {
+  //     res.status(201).json({ message: 'Réservation confirmée', id: insertResult.insertId });
+  //   }
+
+  //   return insertResult.insertId;
+
+  // } catch (error) {
+  //   await connection.rollback();
+  //   throw error;
+  // } finally {
+  //   connection.release();
+  // }
+}
 
 module.exports = router;
