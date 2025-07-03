@@ -12,11 +12,11 @@ router.post("/login", async (req, res) => {
 
     if (rows.length === 0) {
       return res.status(401).json({ message: "utilisateurs non trouvé" });
-    }
+    } 
 
     const user = rows[0];
-    console.log("password",user.mot_de_passe);
-    console.log("password2",password);
+    // Log professional: tentative de connexion
+    console.log(`Tentative de connexion pour l'utilisateur: ${email}`);
     const isPasswordValid = await bcrypt.compare(password, user.mot_de_passe);
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Mot de passe incorrect" });
