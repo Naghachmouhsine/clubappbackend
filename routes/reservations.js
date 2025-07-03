@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
-
+const { json } = require('body-parser');
+const {getTarif,calculeTarif} =require("../services/calculePayement")
 // Validation date ISO YYYY-MM-DD
 function isValidDate(dateString) {
   return /^\d{4}-\d{2}-\d{2}$/.test(dateString);
@@ -26,7 +27,6 @@ function currentDateTime() {
 
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
-
 
 // GET : Liste toutes les réservations avec infos utilisateur et créneau
 router.get('/reservations', async (req, res) => {
@@ -72,7 +72,8 @@ router.get('/reservations/:id', async (req, res) => {
 
 // POST : Ajouter une réservation
 router.post('/reservations', async (req, res) => {
-   const {
+   const reservation = req.body;
+  const {
     id_installation,
     nbr_installation_reserver,
     id_utilisateur,
@@ -80,17 +81,17 @@ router.post('/reservations', async (req, res) => {
     nbr_personn,
     statut,
     infoReservation
-  } = req.body;
-  // Validation basique
-  if (typeof id_utilisateur !== 'number' || id_utilisateur <= 0) {
-    throw new Error("ID utilisateur invalide");
-  }
-  if (typeof id_creneau !== 'number' || id_creneau <= 0) {
-    throw new Error("ID créneau invalide");
-  }
-  if (typeof statut !== 'string' || !['confirmée', 'en attente', 'annulée'].includes(statut.toLowerCase())) {
-    throw new Error("Statut invalide");
-  }
+  }=reservation
+  // // Validation basique
+  // if (typeof id_utilisateur !== 'number' || id_utilisateur <= 0) {
+  //   throw new Error("ID utilisateur invalide");
+  // }
+  // if (typeof id_creneau !== 'number' || id_creneau <= 0) {
+  //   throw new Error("ID créneau invalide");
+  // }
+  // if (typeof statut !== 'string' || !['confirmée', 'en attente', 'annulée'].includes(statut.toLowerCase())) {
+  //   throw new Error("Statut invalide");
+  // }
 
   const connection = await db.getConnection();
   try {
@@ -119,7 +120,6 @@ router.post('/reservations', async (req, res) => {
     if (res) {
       res.status(201).json({ message: 'Réservation confirmée', id: insertResult.insertId });
     }
-
     return insertResult.insertId;
 
   } catch (error) {
@@ -254,5 +254,5 @@ async function reserver(reservation, res = null) {
   //   connection.release();
   // }
 }
-
+module.exports={getTarif}
 module.exports = router;
