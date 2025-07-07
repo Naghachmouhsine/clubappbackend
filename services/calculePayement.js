@@ -63,16 +63,15 @@ async function calculeTarif(reservation) {
       break;
 
     case "Padel":
-      const prixRaquette = reservation.infoReservation.nombre_raquetes*tarif["location_raquette"];
-      console.log('prisRa : ',prixRaquette)
+      // const prixRaquette = reservation.infoReservation.nombre_raquetes*tarif["location_raquette"];
       if (reservation.isAdherant) {
         if (isSoir(reservation.heure_debut) || isWeekend(reservation.date_creneau) || isJourFerieNational(reservation.date_creneau)) {
-          montant = tarif["adherents"]["soir_weekend_feries"]["prix_par_personne"] * nbrPersonn + prixRaquette;
+          montant = tarif["adherents"]["soir_weekend_feries"]["prix_par_personne"] * nbrPersonn ;
         } else {
-          montant = tarif["adherents"]["matin"]["prix_par_personne"] * nbrPersonn + prixRaquette;
+          montant = tarif["adherents"]["matin"]["prix_par_personne"] * nbrPersonn ;
         }
       } else {
-          montant = tarif["non_adherents"]["prix_par_personne"] * nbrPersonn + prixRaquette;
+          montant = tarif["non_adherents"]["prix_par_personne"] * nbrPersonn;
       }
       break;
 

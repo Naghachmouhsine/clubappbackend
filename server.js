@@ -21,6 +21,8 @@ const ReservationRoutes = require('./routes/reservations');
 const creneauxDisponiblesRoutes = require('./routes/creneauxDisponibles');
 const payementStrip=require("./routes/payement/stripe")
 const payementPaypale=require("./routes/payement/paypale")
+const adherantsRoutes = require("./routes/adherants");
+
 // const webhookstripe=require("./routes/payement/webhookStripe")
 app.use('/api', creneauxDisponiblesRoutes);
 app.use('/api', ReservationRoutes);
@@ -32,6 +34,7 @@ app.use("/api", registerRoutes);
 app.use("/api", userProfileRoutes);
 app.use("/api",payementStrip)
 app.use("/api",payementPaypale)
+app.use("/api",adherantsRoutes)
 // app.use('/webhook', webhookstripe); //
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
