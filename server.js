@@ -38,6 +38,10 @@ app.use("/api",payementPaypale)
 app.use("/api",adherantsRoutes)
 app.use("/api",recempense)
 app.use("/api",activite)
+
+const evenementRouter = require('./routes/evenement');
+app.use('/api/evenements', evenementRouter);
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ Serveur lancé sur le port ${PORT}`);
