@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const Stripe = require('stripe');
+const { calculeTarif } = require('../../services/calculePayement');
 const stripe = Stripe(process.env.CLE_STRIPE);
 
 router.post('/payementStripe', async (req, res) => {
   const { reservation } = req.body;
   console.log(reservation)
+  const tarif=await calculeTarif(reservation)
+  console.log("stripe : ",tarif)
   try {
     
     const session = await stripe.checkout.sessions.create({
@@ -13,9 +16,9 @@ router.post('/payementStripe', async (req, res) => {
       line_items: [{
         price_data: {
           currency: 'mad',
-          unit_amount: 200 * 100, // récupérable dynamiquement
+          unit_amount: tarif * 100, // récupérable dynamiquement
           product_data: {
-            name: reservation.infoReservation || 'Réservation Tennis',
+            name: 'Réservation '+reservation.activite,
           },
         },
         quantity: 1,

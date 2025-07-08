@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const paypal = require("@paypal/checkout-server-sdk");
+const { calculeTarif } = require("../../services/calculePayement");
 
 //Configuration de l’environnement PayPal
 let environment = new paypal.core.SandboxEnvironment(
@@ -11,8 +12,10 @@ let client = new paypal.core.PayPalHttpClient(environment);
 
 //Créer une commande
 router.post("/create-paypal-order", async (req, res) => {
-  const  amount  = 200;
-  console.log(amount)
+  const {reservation}=req.body
+  const tarif=await calculeTarif(reservation)
+
+  console.log("1",tarif)
   const request = new paypal.orders.OrdersCreateRequest();
   request.prefer("return=representation");
   request.requestBody({
@@ -20,7 +23,7 @@ router.post("/create-paypal-order", async (req, res) => {
     purchase_units: [{
       amount: {
         currency_code: "USD",
-        value: amount
+        value: tarif
       }
     }]
   });
@@ -30,14 +33,14 @@ router.post("/create-paypal-order", async (req, res) => {
     res.status(200).json({ orderID: order.result.id });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Erreur lors de la création de la commande PayPal");
+    res.status(500).send("Erreur lors de la création de la commande PayPal"+err);
   }
 });
 
 //  Capturer le paiement
 router.post("/capture-paypal-order", async (req, res) => {
   const { orderID } = req.body;
-  console.log("capture : ",orderID)
+   console.log("capture route appelée, body:", req.body);
   const request = new paypal.orders.OrdersCaptureRequest(orderID);
 
   try {

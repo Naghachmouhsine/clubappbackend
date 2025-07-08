@@ -12,18 +12,19 @@ router.get("/userprofile/:id", async (req, res) => {
     const [userProfile] = await db.execute(
       `
       SELECT 
-        u.id AS id_utilisateur,
+        u.id,
         u.nom,
         u.prenom,
         u.email,
         u.telephone,
         u.role,
-        a.date_naissance,
-        a.genre,
+        u.date_naissance,
+        u.genre,
         a.statut_abonnement,
+        a.date_inscription,
         c.specialite,
         r.departement
-      FROM utilisateur u
+      FROM utilisateurs u
       LEFT JOIN adherent a ON u.id = a.id_utilisateur
       LEFT JOIN coach c ON u.id = c.id_utilisateur
       LEFT JOIN responsable r ON u.id = r.id_utilisateur

@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
+const { json } = require('body-parser');
+const { getTarif, calculeTarif } = require("../services/calculePayement")
+const {pointsAJouter}=require("../services/calculePointsFildalites")
 
 // Validation date ISO YYYY-MM-DD
 function isValidDate(dateString) {
@@ -26,7 +29,6 @@ function currentDateTime() {
 
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
-
 
 // GET : Liste toutes les réservations avec infos utilisateur et créneau
 router.get('/reservations', async (req, res) => {
@@ -72,25 +74,16 @@ router.get('/reservations/:id', async (req, res) => {
 
 // POST : Ajouter une réservation
 router.post('/reservations', async (req, res) => {
-   const {
+  const reservation = req.body;
+  const {
     id_installation,
     nbr_installation_reserver,
     id_utilisateur,
     id_creneau,
     nbr_personn,
     statut,
-    infoReservation
-  } = req.body;
-  // Validation basique
-  if (typeof id_utilisateur !== 'number' || id_utilisateur <= 0) {
-    throw new Error("ID utilisateur invalide");
-  }
-  if (typeof id_creneau !== 'number' || id_creneau <= 0) {
-    throw new Error("ID créneau invalide");
-  }
-  if (typeof statut !== 'string' || !['confirmée', 'en attente', 'annulée'].includes(statut.toLowerCase())) {
-    throw new Error("Statut invalide");
-  }
+    activite
+  } = reservation
 
   const connection = await db.getConnection();
   try {
@@ -113,13 +106,23 @@ router.post('/reservations', async (req, res) => {
       'UPDATE `installations` SET `nbr`=? WHERE id=?',
       [nbr_installation_reserver, id_installation]
     );
+    if (activite === "Tennis" || activite === "Padel") {
+      const points = await pointsAJouter(id_utilisateur,activite)
+      await connection.execute(
+        `UPDATE pointsfidelite 
+       SET points = ? 
+       WHERE id_adherant = ?`,
+        [points, id_utilisateur]
+      );
+    }
+
+
 
     await connection.commit();
 
     if (res) {
       res.status(201).json({ message: 'Réservation confirmée', id: insertResult.insertId });
     }
-
     return insertResult.insertId;
 
   } catch (error) {
@@ -129,12 +132,12 @@ router.post('/reservations', async (req, res) => {
     connection.release();
   }
 });
-router.put("/updateStatus",async (req,res)=>{
-  const {id,status}=req.body
+router.put("/updateStatus", async (req, res) => {
+  const { id, status } = req.body
   try {
     const [result] = await db.execute(
       'UPDATE reservations SET statut = ? WHERE id = ?',
-      [status,id]
+      [status, id]
     );
 
     if (result.affectedRows === 0) {
@@ -254,5 +257,5 @@ async function reserver(reservation, res = null) {
   //   connection.release();
   // }
 }
-
+module.exports = { getTarif }
 module.exports = router;

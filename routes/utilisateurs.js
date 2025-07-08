@@ -33,7 +33,7 @@ router.post('/utilisateurs', async (req, res) => {
 // ✅ GET : Liste des utilisateurs
 router.get('/utilisateurs', async (req, res) => {
   try {
-    const [rows] = await db.execute("SELECT * FROM utilisateurs");
+    const [rows] = await db.execute("SELECT `id`, `nom`, `prenom`, `email`, `telephone`, `date_naissance`, `profesion`, `role` FROM `utilisateurs`");
     res.json(rows);
   } catch (error) {
     console.error("Erreur lors du fetch des utilisateurs :", error);
@@ -70,6 +70,29 @@ router.put('/utilisateurs/:id', async (req, res) => {
       WHERE id = ?
     `;
     const [result] = await db.execute(query, [nom, prenom, telephone, role, id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    res.json({ message: "Utilisateur mis à jour avec succès" });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de l'utilisateur :", error);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+});
+
+router.put('/updateRoleUser', async (req, res) => {
+  const { id,newRole } = req.body;
+  
+  try {
+    const query = `
+      UPDATE utilisateurs 
+      SET role = ?
+      WHERE id = ?
+    `;
+
+    const [result] = await db.execute(query, [newRole, id]);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Utilisateur non trouvé" });

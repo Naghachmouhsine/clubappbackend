@@ -7,8 +7,6 @@ const jwt = require("jsonwebtoken");
 // Exemple de route register
 router.post("/register", async (req, res) => {
   const { nom, prenom, email, password, telephone } = req.body;
-
-
   
   // Vérification des champs obligatoires
   if (!nom || !prenom || !email || !password || !telephone) {
