@@ -34,6 +34,11 @@ app.use("/api", registerRoutes);
 app.use("/api", userProfileRoutes);
 app.use("/api",payementStrip)
 app.use("/api",payementPaypale)
+
+const evenementRouter = require('./routes/evenement');
+app.use('/api/evenements', evenementRouter);
+
+
 // app.use('/webhook', webhookstripe); //
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
