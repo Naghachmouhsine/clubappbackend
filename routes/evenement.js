@@ -103,10 +103,12 @@ router.post('/participer', async (req, res) => {
 
 router.get('/getParticipation/:id', async (req, res) => {
   const idAdherant=req.params.id
+  console.log(idAdherant)
   try {
     const [rows] = await pool.query(`SELECT evenement.*,inscription_evenement.id_utilisateur
                                       FROM evenement,inscription_evenement
-                                      WHERE inscription_evenement.id_evenement=evenement.id`);
+                                      WHERE inscription_evenement.id_evenement=evenement.id
+                                      AND inscription_evenement.id_utilisateur= ?;`,[idAdherant]);
     console.log('Événements récupérés:', rows);
     res.json(rows);
   } catch (err) {

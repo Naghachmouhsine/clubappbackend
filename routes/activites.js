@@ -4,13 +4,23 @@ const router = express.Router();
 const db = require('../db');
 
 // Liste des activités
-router.get('/getAllActivite', async (req, res) => {
+router.get('/getAllActivite/:id', async (req, res) => {
+  const idCoach=req.params.id
+  let rows
   try {
-    const [rows] = await db.execute( `SELECT activite.*, utilisateurs.nom,utilisateurs.prenom,installations.nom  as installation
+    if(idCoach==0){ // tout les activites pour admin
+    [rows] = await db.execute( `SELECT activite.*, utilisateurs.nom,utilisateurs.prenom,installations.nom  as installation
                                       FROM activite, coach, utilisateurs, installations
                                       WHERE activite.coach_assigne=coach.id_utilisateur
                                       AND coach.id_utilisateur=utilisateurs.id
                                       AND activite.installation_id=installations.id`);
+    }else{
+    [rows] = await db.execute( `SELECT activite.id,activite.titre,activite.description,activite.type,installations.nom  as installation
+                                      FROM activite,installations
+                                      WHERE activite.installation_id=installations.id
+                                      AND activite.coach_assigne=?`,[idCoach]);
+    }
+
     res.json(rows);
   } catch (error) {
     res.status(500).json({ message: 'Erreur serveur' });
