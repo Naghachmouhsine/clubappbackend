@@ -34,8 +34,10 @@ router.get('/adherants', async (req, res) => {
 // 3. Récupérer les points par ID
 router.get('/getPoints/:id', async (req, res) => {
     const id = req.params.id;
+    console.log(id)
     try {
         const points = await getPoints(id);
+        console.log(points)
         res.json(points);
     } catch (error) {
         console.error("Erreur lors du fetch des points :", error);

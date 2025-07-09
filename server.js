@@ -26,9 +26,8 @@ const creneauxDisponiblesRoutes = require('./routes/creneauxDisponibles');
 const payementStrip = require("./routes/payement/stripe");
 const payementPaypale = require("./routes/payement/paypale");
 const adherantsRoutes = require("./routes/adherants");
-const evenementRouter = require('./routes/evenement'); // attention au nom exact du fichier
 
-// Utilisation des routes
+// const webhookstripe=require("./routes/payement/webhookStripe")
 app.use('/api', creneauxDisponiblesRoutes);
 app.use('/api', ReservationRoutes);
 app.use('/api', CreneauxRoutes);
@@ -37,14 +36,14 @@ app.use("/api", utilisateursRoutes);
 app.use("/api", loginRoutes);
 app.use("/api", registerRoutes);
 app.use("/api", userProfileRoutes);
-app.use("/api", payementStrip);
-app.use("/api", payementPaypale);
-app.use("/api", adherantsRoutes);
+app.use("/api",payementStrip)
+app.use("/api",payementPaypale)
 
 // Route événements (avec gestion images)
 app.use('/api/evenements', evenementRouter);
 
-// Démarrage du serveur
+
+// app.use('/webhook', webhookstripe); //
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ Serveur lancé sur le port ${PORT}`);

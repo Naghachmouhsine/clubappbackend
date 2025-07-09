@@ -53,19 +53,19 @@ router.get('/reservations/:id', async (req, res) => {
   const id = req.params.id;
   try {
     const [rows] = await db.execute(`
-      SELECT r.id, r.date_reservation, r.id_utilisateur, r.id_creneau, r.statut,
-             u.nom AS utilisateur_nom, u.email AS utilisateur_email,
-             c.date AS creneau_date, c.heure_debut, c.heure_fin
-      FROM reservations r
-      JOIN utilisateurs u ON r.id_utilisateur = u.id
-      JOIN creneaux c ON r.id_creneau = c.id
-      WHERE r.id = ?
+                    SELECT r.id, r.date_jour_reservation,r.statut,c.date AS creneau_date,
+                        c.heure_debut, c.heure_fin,i.nom as installation
+                          FROM reservations r
+                          JOIN utilisateurs u ON r.id_utilisateur = u.id
+                          JOIN creneaux c ON r.id_creneau = c.id
+                          JOIN installations i ON c.id_installation=i.id
+                          WHERE u.id = ?;
     `, [id]);
 
     if (rows.length === 0) {
       return res.status(404).json({ message: "Réservation non trouvée" });
     }
-    res.json(rows[0]);
+    res.json(rows);
   } catch (error) {
     console.error("Erreur lors du fetch de la réservation :", error);
     res.status(500).json({ message: "Erreur serveur" });

@@ -4,12 +4,58 @@ const router = express.Router();
 const db = require('../db');
 
 // Liste des activités
-router.get('/', async (req, res) => {
+router.get('/getAllActivite/:id', async (req, res) => {
+  const idCoach=req.params.id
+  let rows
   try {
-    const [rows] = await db.execute('SELECT id, nom, emoji, image FROM activites');
+    if(idCoach==0){ // tout les activites pour admin
+    [rows] = await db.execute( `SELECT activite.*, utilisateurs.nom,utilisateurs.prenom,installations.nom  as installation
+                                      FROM activite, coach, utilisateurs, installations
+                                      WHERE activite.coach_assigne=coach.id_utilisateur
+                                      AND coach.id_utilisateur=utilisateurs.id
+                                      AND activite.installation_id=installations.id`);
+    }else{
+    [rows] = await db.execute( `SELECT activite.id,activite.titre,activite.description,activite.type,installations.nom  as installation
+                                      FROM activite,installations
+                                      WHERE activite.installation_id=installations.id
+                                      AND activite.coach_assigne=?`,[idCoach]);
+    }
+
     res.json(rows);
   } catch (error) {
     res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
+router.get('/coaches', async (req, res) => {
+  try {
+    const [rows] = await db.execute('SELECT u.id,u.nom,u.prenom,c.specialite FROM coach c,utilisateurs u WHERE u.id=c.id_utilisateur');
+    console.log(rows)
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
+router.get('/installation', async (req, res) => {
+  try {
+    const [rows] = await db.execute('SELECT id,nom FROM installations');
+    console.log(rows)
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
+router.post('/activite', async (req, res) => {
+  const { titre, description, type, coach_assigne, installation } = req.body;
+
+  try {
+    const [result] = await db.execute(
+      'INSERT INTO `activite`( `titre`, `description`, `type`, `coach_assigne`, `installation_id`)  VALUES (?, ?, ?, ?, ?)',
+      [titre, description, type, coach_assigne, installation]
+    );
+    res.status(201).json({ message: "Créneau ajouté avec succès", id: result.insertId });
+  } catch (error) {
+    console.error("Erreur lors de l'ajout du créneau :", error);
+    res.status(500).json({ message: "Erreur serveur" });
   }
 });
 

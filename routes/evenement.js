@@ -1,20 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../db');
-const multer = require('multer');
-const path = require('path');
+const pool = require('../db'); // Connexion MySQL
 
-// Configuration de multer pour l'upload des images
-const storage = multer.diskStorage({
-  destination: 'uploads/', // dossier où enregistrer les fichiers
-  filename: (req, file, cb) => {
-    const uniqueName = Date.now() + path.extname(file.originalname);
-    cb(null, uniqueName);
-  }
-});
-const upload = multer({ storage });
-
-// 🟢 GET /evenements — liste tous les événements
+// GET /evenements — liste tous les événements
 router.get('/', async (req, res) => {
   console.log('GET /api/evenements');
   try {
@@ -92,5 +80,57 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur' });
   }
 });
+
+
+router.post('/participer', async (req, res) => {
+    const { idAdherant, idEvenement } = req.body;
+    const connection = await pool.getConnection();
+    const pointAdheran = await getPoints(idAdherant)
+    const pointsModifer = pointAdheran.points + 10
+    try {
+
+        await connection.beginTransaction();
+
+        // ajoute recempense dans la table
+        await connection.execute(
+            `INSERT INTO inscription_evenement (id_utilisateur, id_evenement) VALUES (?,?)`,
+            [idAdherant, idEvenement]
+        );
+
+        await connection.execute(
+            `UPDATE pointsfidelite 
+             SET points = ? 
+             WHERE id_adherant = ?`,
+            [pointsModifer, idAdherant]
+        );
+
+        await connection.commit();
+        res.json({ message: "La participation est réussie" });
+
+    } catch (error) {
+        console.error("Erreur lors de la réinscription :", error);
+        if (connection) await connection.rollback();
+        res.status(500).json({ message: "Erreur serveur pendant l'ajoute recempnse." });
+    } finally {
+        if (connection) connection.release();
+    }
+});
+
+router.get('/getParticipation/:id', async (req, res) => {
+  const idAdherant=req.params.id
+  console.log(idAdherant)
+  try {
+    const [rows] = await pool.query(`SELECT evenement.*,inscription_evenement.id_utilisateur
+                                      FROM evenement,inscription_evenement
+                                      WHERE inscription_evenement.id_evenement=evenement.id
+                                      AND inscription_evenement.id_utilisateur= ?;`,[idAdherant]);
+    console.log('Événements récupérés:', rows);
+    res.json(rows);
+  } catch (err) {
+    console.error('Erreur GET /evenements:', err.message);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
+
 
 module.exports = router;
