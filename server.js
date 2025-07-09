@@ -7,10 +7,14 @@ dotenv.config();
 
 const app = express();
 
+// Middlewares
 app.use(cors());
 app.use(bodyParser.json());
 
-// ✅ Assure-toi que ce fichier exporte bien un `router`
+// Rendre le dossier uploads accessible publiquement (pour images)
+app.use('/uploads', express.static('uploads'));
+
+// Import des routes
 const loginRoutes = require("./routes/login");
 const registerRoutes = require("./routes/register");
 const userProfileRoutes = require("./routes/userprofile");
@@ -19,11 +23,12 @@ const installationsRoutes = require('./routes/installations');
 const CreneauxRoutes = require('./routes/creneaux');
 const ReservationRoutes = require('./routes/reservations');
 const creneauxDisponiblesRoutes = require('./routes/creneauxDisponibles');
-const payementStrip=require("./routes/payement/stripe")
-const payementPaypale=require("./routes/payement/paypale")
+const payementStrip = require("./routes/payement/stripe");
+const payementPaypale = require("./routes/payement/paypale");
 const adherantsRoutes = require("./routes/adherants");
+const evenementRouter = require('./routes/evenement'); // attention au nom exact du fichier
 
-// const webhookstripe=require("./routes/payement/webhookStripe")
+// Utilisation des routes
 app.use('/api', creneauxDisponiblesRoutes);
 app.use('/api', ReservationRoutes);
 app.use('/api', CreneauxRoutes);
@@ -32,14 +37,14 @@ app.use("/api", utilisateursRoutes);
 app.use("/api", loginRoutes);
 app.use("/api", registerRoutes);
 app.use("/api", userProfileRoutes);
-app.use("/api",payementStrip)
-app.use("/api",payementPaypale)
+app.use("/api", payementStrip);
+app.use("/api", payementPaypale);
+app.use("/api", adherantsRoutes);
 
-const evenementRouter = require('./routes/evenement');
+// Route événements (avec gestion images)
 app.use('/api/evenements', evenementRouter);
 
-
-// app.use('/webhook', webhookstripe); //
+// Démarrage du serveur
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ Serveur lancé sur le port ${PORT}`);

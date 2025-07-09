@@ -1,8 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../db'); // Connexion MySQL
+const pool = require('../db');
+const multer = require('multer');
+const path = require('path');
 
-// GET /evenements — liste tous les événements
+// Configuration de multer pour l'upload des images
+const storage = multer.diskStorage({
+  destination: 'uploads/', // dossier où enregistrer les fichiers
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + path.extname(file.originalname);
+    cb(null, uniqueName);
+  }
+});
+const upload = multer({ storage });
+
+// 🟢 GET /evenements — liste tous les événements
 router.get('/', async (req, res) => {
   console.log('GET /api/evenements');
   try {
@@ -15,14 +27,17 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST /evenements — créer un événement
-router.post('/', async (req, res) => {
+// 🟢 POST /evenements — créer un événement avec image (facultative)
+router.post('/', upload.single('image'), async (req, res) => {
   const { nom, description, date, lieu } = req.body;
-  console.log('POST /api/evenements avec:', req.body);
+  const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+
+  console.log('POST /api/evenements avec:', { nom, description, date, lieu, image_url });
+
   try {
     const [result] = await pool.query(
-      'INSERT INTO evenement (nom, description, date, lieu) VALUES (?, ?, ?, ?)',
-      [nom, description, date, lieu]
+      'INSERT INTO evenement (nom, description, date, lieu, image_url) VALUES (?, ?, ?, ?, ?)',
+      [nom, description, date, lieu, image_url]
     );
     const [created] = await pool.query('SELECT * FROM evenement WHERE id = ?', [result.insertId]);
     console.log('Événement créé:', created[0]);
@@ -33,16 +48,28 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT /evenements/:id — modifier un événement
-router.put('/:id', async (req, res) => {
+// 🟡 PUT /evenements/:id — modifier un événement (avec ou sans nouvelle image)
+router.put('/:id', upload.single('image'), async (req, res) => {
   const { id } = req.params;
   const { nom, description, date, lieu } = req.body;
-  console.log(`PUT /api/evenements/${id} avec:`, req.body);
+  const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+
+  console.log(`PUT /api/evenements/${id} avec:`, { nom, description, date, lieu, image_url });
+
   try {
-    await pool.query(
-      'UPDATE evenement SET nom = ?, description = ?, date = ?, lieu = ? WHERE id = ?',
-      [nom, description, date, lieu, id]
-    );
+    let query = 'UPDATE evenement SET nom = ?, description = ?, date = ?, lieu = ?';
+    const params = [nom, description, date, lieu];
+
+    if (image_url) {
+      query += ', image_url = ?';
+      params.push(image_url);
+    }
+
+    query += ' WHERE id = ?';
+    params.push(id);
+
+    await pool.query(query, params);
+
     const [updated] = await pool.query('SELECT * FROM evenement WHERE id = ?', [id]);
     console.log('Événement modifié:', updated[0]);
     res.json(updated[0]);
@@ -52,7 +79,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE /evenements/:id — supprimer un événement
+// 🔴 DELETE /evenements/:id — supprimer un événement
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   console.log(`DELETE /api/evenements/${id}`);
