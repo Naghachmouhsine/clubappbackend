@@ -29,7 +29,7 @@ const adherantsRoutes = require("./routes/adherants");
 const evenementRouter=require("./routes/evenement")
 const recempenseRouter=require("./routes/recempense")
 const activiteRoutes = require("./routes/activites");
-
+const statistiaueRouter=require("./routes/statistique")
 // 🟢 Utilisation des routes
 app.use("/api", loginRoutes);
 app.use("/api", registerRoutes);
@@ -45,7 +45,7 @@ app.use("/api", adherantsRoutes);
 app.use("/api/evenements", evenementRouter);
 app.use("/api", recempenseRouter);
 app.use("/api", activiteRoutes);
-
+app.use('/api/statistique',statistiaueRouter)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

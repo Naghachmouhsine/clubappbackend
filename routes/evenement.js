@@ -14,6 +14,17 @@ const storage = multer.diskStorage({
     cb(null, uniqueName);
   }
 });
+
+
+async function adherantsParticiper(id_adherant, id_evenement) { // pour verfier adhernent est participer ou non 
+  try {
+    const [rows] = await pool.query('SELECT * FROM inscription_evenement WHERE id_utilisateur=? AND id_evenement=? ', [id_adherant, id_evenement]);
+    return rows.length != 0
+  } catch (err) {
+    return false
+  }
+}
+
 const upload = multer({ storage });
 
 // 🟢 GET /evenements — liste tous les événements
@@ -88,32 +99,39 @@ router.delete('/:id', async (req, res) => {
 // 🟢 POST /evenements/participer — inscrire un adhérent à un événement + ajouter 10 points
 router.post('/participer', async (req, res) => {
   const { idAdherant, idEvenement } = req.body;
-  const connection = await pool.getConnection();
-  try {
-    await connection.beginTransaction();
+  const isParticiper = await adherantsParticiper(idAdherant, idEvenement)
+  if (isParticiper)// adherant deja participer
+    res.json({ isParticiper: isParticiper, message: "vous etes deja participer dans cet evenement" });
+  else {
+    try {
+      
+      const connection = await pool.getConnection();
+      await connection.beginTransaction();
 
-    const pointAdheran = await getPoints(idAdherant);
-    const pointsModifer = pointAdheran.points + 10;
+      const pointAdheran = await getPoints(idAdherant);
+      const pointsModifer = pointAdheran.points + 10;
 
-    await connection.execute(
-      'INSERT INTO inscription_evenement (id_utilisateur, id_evenement) VALUES (?, ?)',
-      [idAdherant, idEvenement]
-    );
+      await connection.execute(
+        'INSERT INTO inscription_evenement (id_utilisateur, id_evenement) VALUES (?, ?)',
+        [idAdherant, idEvenement]
+      );
 
-    await connection.execute(
-      'INSERT INTO pointsfidelite (id_adherant, points) VALUES (?, ?) ON DUPLICATE KEY UPDATE points =? ',
-      [idAdherant,pointsModifer,pointsModifer]
-    );
+      await connection.execute(
+        'INSERT INTO pointsfidelite (id_adherant, points) VALUES (?, ?) ON DUPLICATE KEY UPDATE points =? ',
+        [idAdherant, pointsModifer, pointsModifer]
+      );
 
-    await connection.commit();
-    res.json({ message: "La participation est réussie" });
-  } catch (error) {
-    console.error("Erreur lors de la participation :", error);
-    if (connection) await connection.rollback();
-    res.status(500).json({ message: "Erreur serveur pendant la participation." });
-  } finally {
-    if (connection) connection.release();
+      await connection.commit();
+      res.json({ message: "La participation est réussie" });
+    } catch (error) {
+      console.error("Erreur lors de la participation :", error);
+      if (connection) await connection.rollback();
+      res.status(500).json({ message: "Erreur serveur pendant la participation." });
+    } finally {
+      if (connection) connection.release();
+    }
   }
+
 });
 
 // 🟢 GET /evenements/getParticipation/:id — récupère les événements auxquels un adhérent a participé
