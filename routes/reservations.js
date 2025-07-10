@@ -109,10 +109,10 @@ router.post('/reservations', async (req, res) => {
     if (activite === "Tennis" || activite === "Padel") {
       const points = await pointsAJouter(id_utilisateur,activite)
       await connection.execute(
-        `UPDATE pointsfidelite 
-       SET points = ? 
-       WHERE id_adherant = ?`,
-        [points, id_utilisateur]
+        ` INSERT INTO pointsfidelite (id_adherant, points)
+           VALUES (?, ?)
+           ON DUPLICATE KEY UPDATE points = ?`,
+        [id_utilisateur,points,points]
       );
     }
 

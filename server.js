@@ -26,7 +26,8 @@ const creneauxDisponiblesRoutes = require('./routes/creneauxDisponibles');
 const payementStrip = require("./routes/payement/stripe");
 const payementPaypale = require("./routes/payement/paypale");
 const adherantsRoutes = require("./routes/adherants");
-
+const evenementRouter=require("./routes/evenement")
+const recempenseRouter=require("./routes/recempense")
 // const webhookstripe=require("./routes/payement/webhookStripe")
 app.use('/api', creneauxDisponiblesRoutes);
 app.use('/api', ReservationRoutes);
@@ -38,7 +39,8 @@ app.use("/api", registerRoutes);
 app.use("/api", userProfileRoutes);
 app.use("/api",payementStrip)
 app.use("/api",payementPaypale)
-
+app.use("/api",adherantsRoutes)
+app.use("/api",recempenseRouter)
 // Route événements (avec gestion images)
 app.use('/api/evenements', evenementRouter);
 

@@ -99,10 +99,10 @@ router.put('/reinscription', async (req, res) => {
 
         // Cumuler les points au lieu de les écraser
         await connection.execute(
-            `UPDATE pointsfidelite 
-       SET points = ? 
-       WHERE id_adherant = ?`,
-            [pointsAAjouter, idAdherant]
+            ` INSERT INTO pointsfidelite (id_adherant, points)
+                VALUES (?, ?)
+                ON DUPLICATE KEY UPDATE points = ?`,
+            [idAdherant,pointsAAjouter,pointsAAjouter]
         );
 
         await connection.commit();
