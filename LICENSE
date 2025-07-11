@@ -1,21 +1,40 @@
-MIT License
+LICENCE PROPRIÉTAIRE - CLUBAPP BACKEND
 
-Copyright (c) 2025 Naghach Mouhsine
+Copyright (c) 2025 Naghach Mouhsine. Tous droits réservés.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+RESTRICTIONS D'UTILISATION
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Ce logiciel et sa documentation associée (le "Logiciel") sont la propriété exclusive 
+de Naghach Mouhsine. L'utilisation de ce logiciel est soumise aux conditions suivantes :
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+AUTORISATIONS LIMITÉES :
+- Consultation du code source à des fins éducatives uniquement
+- Contribution au développement du projet via des pull requests
+- Utilisation pour des tests et développement local dans le cadre du projet
+
+INTERDICTIONS STRICTES :
+- Utilisation commerciale ou à des fins lucratives
+- Distribution, vente ou licence du logiciel à des tiers
+- Création de produits dérivés ou de forks indépendants
+- Utilisation du code dans d'autres projets sans autorisation écrite
+- Reverse engineering ou décompilation
+- Suppression ou modification des mentions de copyright
+
+CONDITIONS DE CONTRIBUTION :
+- Toute contribution devient automatiquement propriété du détenteur du copyright
+- Les contributeurs renoncent à leurs droits sur les modifications apportées
+- Les contributeurs s'engagent à respecter ces conditions d'utilisation
+
+CLAUSE DE NON-RESPONSABILITÉ :
+LE LOGICIEL EST FOURNI "EN L'ÉTAT", SANS GARANTIE D'AUCUNE SORTE, EXPRESSE OU 
+IMPLICITE, Y COMPRIS MAIS SANS S'Y LIMITER AUX GARANTIES DE QUALITÉ MARCHANDE, 
+D'ADÉQUATION À UN USAGE PARTICULIER ET D'ABSENCE DE CONTREFAÇON.
+
+VIOLATION :
+Toute violation de ces conditions entraînera la révocation immédiate de tous les 
+droits accordés et pourra faire l'objet de poursuites judiciaires.
+
+Pour toute demande d'autorisation d'utilisation commerciale ou autre usage non 
+autorisé, veuillez contacter : naghachmouhsine@example.com
+
+Date d'entrée en vigueur : 1er janvier 2025

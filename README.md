@@ -3,7 +3,7 @@
 [![Node.js](https://img.shields.io/badge/Node.js-v14+-green.svg)](https://nodejs.org/)
 [![Express.js](https://img.shields.io/badge/Express.js-v4.17+-blue.svg)](https://expressjs.com/)
 [![MySQL](https://img.shields.io/badge/MySQL-v8.0+-orange.svg)](https://www.mysql.com/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
 [![GitHub Issues](https://img.shields.io/github/issues/Naghachmouhsine/clubappbackend)](https://github.com/Naghachmouhsine/clubappbackend/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/Naghachmouhsine/clubappbackend)](https://github.com/Naghachmouhsine/clubappbackend/stargazers)
 
@@ -478,33 +478,34 @@ Nous accueillons les contributions ! Voici comment procéder :
 - Inspiré par les meilleures pratiques de l'industrie
 - Construit avec ❤️ pour la communauté sportive
 
-## 📄 Licence
+## 📄 Licence et Droits d'Utilisation
 
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+⚠️ **IMPORTANT** : Ce projet est sous **licence propriétaire** avec des restrictions d'utilisation.
 
-```
-MIT License
+### 🔒 Restrictions d'Utilisation
 
-Copyright (c) 2025 Naghach Mouhsine
+- ✅ **Autorisé** : Consultation du code à des fins éducatives
+- ✅ **Autorisé** : Contribution au projet via pull requests
+- ✅ **Autorisé** : Tests et développement local dans le cadre du projet
+- ❌ **INTERDIT** : Utilisation commerciale ou à des fins lucratives
+- ❌ **INTERDIT** : Distribution ou vente du logiciel
+- ❌ **INTERDIT** : Création de forks indépendants
+- ❌ **INTERDIT** : Utilisation du code dans d'autres projets
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+### 📋 Conditions de Contribution
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+En contribuant à ce projet, vous acceptez que :
+- Vos contributions deviennent propriété du détenteur du copyright
+- Vous respectez les restrictions d'utilisation ci-dessus
+- Vous ne pouvez pas utiliser le code à des fins personnelles ou commerciales
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
+### 📞 Contact pour Autorisations
+
+Pour toute demande d'autorisation d'utilisation commerciale :
+- 📧 Email : naghachmouhsine@example.com
+- 💼 LinkedIn : [Profil LinkedIn](https://linkedin.com/in/naghachmouhsine)
+
+Voir le fichier [LICENSE](LICENSE) pour les détails complets.
 
 ## 🚀 Roadmap
 

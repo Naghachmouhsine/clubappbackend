@@ -15,6 +15,29 @@ Merci de votre intérêt pour contribuer à ClubApp Backend ! Ce guide vous aide
 
 Ce projet adhère au [Code de Conduite Contributor Covenant](https://www.contributor-covenant.org/). En participant, vous vous engagez à respecter ce code.
 
+## ⚠️ AVERTISSEMENT IMPORTANT - LICENCE PROPRIÉTAIRE
+
+**ATTENTION** : Ce projet est sous licence propriétaire avec des restrictions strictes d'utilisation.
+
+### 🔒 Restrictions pour les Contributeurs
+
+En contribuant à ce projet, vous acceptez que :
+
+- ✅ **Vos contributions** deviennent automatiquement propriété du détenteur du copyright
+- ❌ **Vous ne pouvez PAS** utiliser ce code à des fins personnelles ou commerciales
+- ❌ **Vous ne pouvez PAS** créer des forks indépendants ou des projets dérivés
+- ❌ **Vous ne pouvez PAS** distribuer ou vendre ce logiciel
+- ✅ **Vous pouvez** consulter le code à des fins éducatives uniquement
+
+### 📋 Engagement des Contributeurs
+
+En soumettant une pull request, vous certifiez que :
+- Vous avez lu et accepté les conditions de la licence propriétaire
+- Vous renoncez à vos droits sur les modifications apportées
+- Vous vous engagez à ne pas utiliser ce code en dehors du cadre de ce projet
+
+**Si vous n'acceptez pas ces conditions, veuillez ne pas contribuer au projet.**
+
 ## 🚀 Comment Contribuer
 
 ### Prérequis
