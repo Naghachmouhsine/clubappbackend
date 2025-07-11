@@ -502,7 +502,7 @@ En contribuant à ce projet, vous acceptez que :
 ### 📞 Contact pour Autorisations
 
 Pour toute demande d'autorisation d'utilisation commerciale :
-- 📧 Email : naghachmouhsine@example.com
+- 📧 Email : naghachmouhsine@gmail.com / ytangara2003@gmail.com
 - 💼 LinkedIn : [Profil LinkedIn](https://linkedin.com/in/naghachmouhsine)
 
 Voir le fichier [LICENSE](LICENSE) pour les détails complets.
