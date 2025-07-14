@@ -1,10 +1,24 @@
 {
-  "name": "backend",
+  "name": "clubapp-backend",
   "version": "1.0.0",
-  "description": "Backend for user authentication and MySQL connection",
+  "description": "API REST pour la gestion complète d'un club sportif - Licence Propriétaire",
   "main": "server.js",
+  "private": true,
+  "license": "PROPRIETARY",
+  "author": {
+    "name": "Naghach Mouhsine",
+    "email": "naghachmouhsine@example.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Naghachmouhsine/clubappbackend.git"
+  },
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "dev": "nodemon server.js",
+    "prod": "NODE_ENV=production node server.js",
+    "test": "echo \"Tests à implémenter\" && exit 1",
+    "lint": "echo \"Linting à implémenter\" && exit 1"
   },
   "dependencies": {
     "@paypal/checkout-server-sdk": "^1.0.3",
