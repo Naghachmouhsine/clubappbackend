@@ -7,8 +7,31 @@ dotenv.config();
 
 const app = express();
 
-// 🟡 Middlewares
-app.use(cors());
+// 🟡 Middlewares - Configuration CORS très permissive pour Capacitor et mobile
+app.use(cors({
+  origin: function (origin, callback) {
+    // Permettre les requêtes sans origine (applications mobiles)
+    if (!origin) return callback(null, true);
+    
+    // Permettre toutes les origines pour le développement
+    return callback(null, true);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: [
+    'Content-Type', 
+    'Authorization', 
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'Access-Control-Request-Method',
+    'Access-Control-Request-Headers'
+  ],
+  exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
+  preflightContinue: false,
+  optionsSuccessStatus: 200
+}));
+
 app.use(bodyParser.json());
 
 // 🟢 Rendre le dossier uploads accessible publiquement (pour images)
@@ -48,6 +71,8 @@ app.use("/api", activiteRoutes);
 app.use('/api/statistique',statistiaueRouter)
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`✅ Serveur lancé sur le port ${PORT}`);
+// ✅ Écouter sur toutes les interfaces réseau (0.0.0.0) pour permettre les connexions externes
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Serveur lancé sur 0.0.0.0:${PORT}`);
+  console.log(`🔗 Accessible depuis le réseau local sur http://[VOTRE_IP]:${PORT}`);
 });
