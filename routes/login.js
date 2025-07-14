@@ -26,7 +26,7 @@ router.post("/login", async (req, res) => {
       expiresIn: "1d",
     });
 
-    res.json({ token, user: { id: user.id, email: user.email,role:user.role,telephone : user.telephone,date_naissance : user.date_naissance,profesion:user.profesion } });
+    res.json({ token, user: { id: user.id,nom:user.nom,prenom:user.prenom ,email: user.email,role:user.role,telephone : user.telephone,date_naissance : user.date_naissance,profesion:user.profesion } });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Erreur serveur" });
@@ -42,7 +42,6 @@ router.post('/envoiEmail', async (req, res) => { // envoi email pour reintialise
   
 try {
     const [user] = await db.execute("SELECT id FROM utilisateurs WHERE email = ?", [email.toLowerCase()]);
-    cons
     if (user.length === 0) {
       return res.status(404).json({ message: "Utilisateur non trouvé." });
     }

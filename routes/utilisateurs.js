@@ -61,15 +61,15 @@ router.get('/utilisateurs/:id', async (req, res) => {
 // ✅ PUT : Modifier un utilisateur
 router.put('/utilisateurs/:id', async (req, res) => {
   const id = req.params.id;
-  const { nom, prenom, telephone, role } = req.body;
+  const { nom, prenom, telephone, profesion,date_naissance } = req.body;
 
   try {
     const query = `
       UPDATE utilisateurs 
-      SET nom = ?, prenom = ?, telephone = ?, role = ?
+      SET nom = ?, prenom = ?, telephone = ?,profesion=?,date_naissance=?
       WHERE id = ?
     `;
-    const [result] = await db.execute(query, [nom, prenom, telephone, role, id]);
+    const [result] = await db.execute(query, [nom, prenom, telephone, profesion,date_naissance,id]);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Utilisateur non trouvé" });

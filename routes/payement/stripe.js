@@ -29,8 +29,8 @@ router.post('/payementStripe', async (req, res) => {
         reservation: JSON.stringify(reservation)
       },
 
-     success_url: `http://localhost:4200/resultPayement?status=success&activiter=${reservation.activite}&idRes=${reservation.id}&session_id={CHECKOUT_SESSION_ID}`,
-     cancel_url: `http://localhost:4200/resultPayement?status=cancel&activiter=${reservation.activite}&idRes=${reservation.id}`,
+     success_url: `http://192.168.11.116:4200/resultPayement?status=success&activiter=${reservation.activite}&idRes=${reservation.id}&session_id={CHECKOUT_SESSION_ID}`,
+     cancel_url: `http://192.168.11.116:4200/resultPayement?status=cancel&activiter=${reservation.activite}&idRes=${reservation.id}`,
 
     });
 

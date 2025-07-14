@@ -59,7 +59,8 @@ router.get('/reservations/:id', async (req, res) => {
                           JOIN utilisateurs u ON r.id_utilisateur = u.id
                           JOIN creneaux c ON r.id_creneau = c.id
                           JOIN installations i ON c.id_installation=i.id
-                          WHERE u.id = ?;
+                          WHERE u.id = ?
+                          ORDER BY r.date_jour_reservation DESC;
     `, [id]);
 
     if (rows.length === 0) {
