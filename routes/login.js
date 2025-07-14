@@ -7,28 +7,53 @@ const nodemailer = require('nodemailer');
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
+  // 🔍 Debug: Afficher les données reçues
+  console.log("=== DEBUG LOGIN ===");
+  console.log("Email reçu:", email);
+  console.log("Password reçu:", password ? "***masqué***" : "VIDE");
+  console.log("Body complet:", req.body);
+
+  // Vérifier si les données sont présentes
+  if (!email || !password) {
+    console.log("❌ Email ou mot de passe manquant");
+    return res.status(401).json({ message: "Email et mot de passe requis" });
+  }
+
   try {
     const [rows] = await db.execute("SELECT * FROM utilisateurs WHERE email = ?", [email]);
+    console.log("Nombre d'utilisateurs trouvés:", rows.length);
 
     if (rows.length === 0) {
+      console.log("❌ Utilisateur non trouvé pour email:", email);
       return res.status(401).json({ message: "utilisateurs non trouvé" });
     } 
 
     const user = rows[0];
-    // Log professional: tentative de connexion
-    console.log(`Tentative de connexion pour l'utilisateur: ${email}`);
+    console.log("✅ Utilisateur trouvé:", user.email);
+    console.log("Hash en base:", user.mot_de_passe ? "présent" : "ABSENT");
+    
     const isPasswordValid = await bcrypt.compare(password, user.mot_de_passe);
+    console.log("Mot de passe valide:", isPasswordValid);
+    
     if (!isPasswordValid) {
+      console.log("❌ Mot de passe incorrect pour:", email);
       return res.status(401).json({ message: "Mot de passe incorrect" });
+    }
+
+    // Vérifier JWT_SECRET
+    if (!process.env.JWT_SECRET) {
+      console.log("❌ JWT_SECRET manquant dans .env");
+      return res.status(500).json({ message: "Configuration serveur manquante" });
     }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
 
+    console.log("✅ Connexion réussie pour:", email);
     res.json({ token, user: { id: user.id,nom:user.nom,prenom:user.prenom ,email: user.email,role:user.role,telephone : user.telephone,date_naissance : user.date_naissance,profesion:user.profesion } });
   } catch (error) {
-    console.error(error);
+    console.error("❌ Erreur dans /login:", error);
     res.status(500).json({ message: "Erreur serveur" });
   }
 });
